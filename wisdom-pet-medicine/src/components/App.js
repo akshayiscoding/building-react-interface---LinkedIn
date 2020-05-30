@@ -10,10 +10,24 @@ class App extends Component {
     super();
     this.state = {
       myAppointments: [],
-      displayForm: true,
+      lastIndex: 0,
+      displayForm: false,
     };
     this.deleteAppointments = this.deleteAppointments.bind(this);
     this.showForm = this.showForm.bind(this);
+    this.addAppointment = this.addAppointment.bind(this);
+  }
+
+  addAppointment(apt) {
+    let tempApts = this.state.myAppointments;
+    apt.aptId = this.state.lastIndex;
+    tempApts.unshift(apt);
+
+    this.setState({
+      myAppointments: tempApts,
+      lastIndex: this.state.lastIndex + 1
+    });
+
   }
 
   deleteAppointments(apt) {
@@ -33,12 +47,14 @@ class App extends Component {
       .then(response => response.json())
       .then(result => {
         const apts = result.map(item => {
+          item.aptId = this.state.lastIndex;
+          this.setState({ lastIndex: this.state.lastIndex + 1 });
           return item;
-        })
+        });
         this.setState({
           myAppointments: apts
         });
-      })
+      });
   }
 
   render() {
@@ -48,7 +64,10 @@ class App extends Component {
           <div className="row">
             <div className="col-md-12 bg-white">
               <div className="container">
-                <AddAppoinments displayForm={this.state.displayForm} showForm={this.showForm} />
+                <AddAppoinments
+                  displayForm={this.state.displayForm}
+                  showForm={this.showForm}
+                  addAppointment={this.addAppointment} />
                 <SearchAppointments />
                 <ListAppoinments appoinments={this.state.myAppointments} deleteAppointments={this.deleteAppointments} />
               </div>
