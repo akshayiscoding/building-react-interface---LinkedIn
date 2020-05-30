@@ -9,16 +9,23 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      myAppointments: []
+      myAppointments: [],
+      displayForm: true,
     };
     this.deleteAppointments = this.deleteAppointments.bind(this);
+    this.showForm = this.showForm.bind(this);
   }
 
   deleteAppointments(apt) {
     let tempApts = this.state.myAppointments;
     tempApts = without(tempApts, apt);
-
     this.setState({ myAppointments: tempApts });
+  }
+
+  showForm() {
+    let tempDisplayForm = this.state.displayForm;
+    tempDisplayForm = !tempDisplayForm;
+    this.setState({ displayForm: tempDisplayForm })
   }
 
   componentDidMount() {
@@ -41,7 +48,7 @@ class App extends Component {
           <div className="row">
             <div className="col-md-12 bg-white">
               <div className="container">
-                <AddAppoinments />
+                <AddAppoinments displayForm={this.state.displayForm} showForm={this.showForm} />
                 <SearchAppointments />
                 <ListAppoinments appoinments={this.state.myAppointments} deleteAppointments={this.deleteAppointments} />
               </div>
